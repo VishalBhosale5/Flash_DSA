@@ -51,11 +51,13 @@ public class LearnGraph {
 		g.addEdge("G", "F", 2);
 		g.addEdge("E", "G", 4);
 		g.display();
+		
+		g.BFS("A");
 		//g.removeEdge("D", "E");
 		//g.DFT();
 		//System.out.println();
-		LearnGraph gg=g.prims();
-		gg.display();
+		//LearnGraph gg=g.prims();
+		//gg.display();
 		//g.BFT();
 		//graph.display();
 
@@ -93,15 +95,15 @@ public class LearnGraph {
 
 	public void addEdge(String src, String dest, int cost) {
 
-		if (!this.vtces.containsKey(src) && !vtces.containsKey(dest))
+		if (!this.vtces.containsKey(src) || !vtces.containsKey(dest))
 			return;
 		// also check if edge is already present or not
 		if (vtces.get(src).neighb.containsKey(dest))
 			return;
 
-		// in case of undirected graph if directed then comment last line
+		// in case of undirected graph 
 		vtces.get(src).neighb.put(dest, cost);
-		 vtces.get(dest).neighb.put(src, cost); //for undirected graph comment off
+		 vtces.get(dest).neighb.put(src, cost); //for directed graph comment this line
 
 	}
 
@@ -123,7 +125,7 @@ public class LearnGraph {
 			return;
 
 		vtces.get(src).neighb.remove(dest);
-		 vtces.get(dest).neighb.remove(src); //for undirected graph comment off
+		 vtces.get(dest).neighb.remove(src); //for undirected graph comment this
 
 	}
 
@@ -139,31 +141,22 @@ public class LearnGraph {
 	// BFS traversal
 
 	public void BFS(String src) {
-
-		HashSet<String> prc = new HashSet<>();
-
+		HashSet<String> visited = new HashSet<>();
 		Queue<String> q = new LinkedList<>();
-
-		Vertex vt = new Vertex();
-
 		q.add(src);
-		prc.add(src);
+		visited.add(src);
 
 		while (!q.isEmpty()) {
 			String vttc = q.remove();
-
 			System.out.print(vttc + " ");
 
 			for (String key : vtces.get(vttc).neighb.keySet()) {
-
-				if (!prc.contains(key)) {
-					prc.add(key);
+				if (!visited.contains(key)) {
+					visited.add(key);
 					q.add(key);
 				}
 			}
-
 		}
-
 	}
 
 	// BFT
@@ -177,111 +170,77 @@ public class LearnGraph {
 		Pair p = new Pair();
 		p.vname = src;
 		p.psf = src;
-		HashSet<String> prc = new HashSet<>();
-
+		HashSet<String> visited = new HashSet<>();
 		Queue<Pair> q = new LinkedList<>();
-
 		q.add(p);
-		prc.add(src);
+		visited.add(src);
 
 		while (!q.isEmpty()) {
 			Pair vttc = q.remove();
-
 			System.out.println(vttc.vname + " via " + vttc.psf);
-
 			for (String key : vtces.get(vttc.vname).neighb.keySet()) {
-
-				if (!prc.contains(key)) {
+				if (!visited.contains(key)) {
 					Pair pp = new Pair();
 					pp.vname = key;
 					pp.psf = vttc.psf + key;
-					prc.add(key);
+					visited.add(key);
 					q.add(pp);
 				}
 			}
-
 		}
-
 	}
 
-	// DFS
+	// DFS Stack O(V+E)
 	public void DFS(String src) {
-
-		HashSet<String> prc = new HashSet<>();
-
+		HashSet<String> visitd = new HashSet<>();
 		Stack<String> st = new Stack<>();
-
-		Vertex vt = new Vertex();
-
 		st.add(src);
-		prc.add(src);
-
+		visitd.add(src);
 		while (!st.isEmpty()) {
 			String vttc = st.pop();
-
 			System.out.print(vttc + " ");
-
 			for (String key : vtces.get(vttc).neighb.keySet()) {
-
-				if (!prc.contains(key)) {
-					prc.add(key);
+				if (!visitd.contains(key)) {
+					visitd.add(key);
 					st.push(key);
 				}
 			}
-
 		}
-
 	}
-
-	public void DFSR(HashSet<String> prc, String vname) {
-
+	
+	//DFS recursive implementation
+	public void DFSR(HashSet<String> visited, String vname) {
 		System.out.print(vname + " ");
-
 		for (String key : vtces.get(vname).neighb.keySet()) {
-
-			if (!prc.contains(key)) {
-				prc.add(key);
-
-				DFSR(prc, key);
-
+			if (!visited.contains(key)) {
+				visited.add(key);
+				DFSR(visited, key);
 			}
-
 		}
-
 	}
 
 	// DFT
 	public void DFT(String src) {
-
-		HashSet<String> prc = new HashSet<>();
-
+		HashSet<String> visited = new HashSet<>();
 		Stack<Pair> st = new Stack<>();
-
 		Pair p = new Pair();
 		p.vname = src;
 		p.psf = src;
-
 		st.add(p);
-		prc.add(src);
-
+		visited.add(src);
 		while (!st.isEmpty()) {
 			Pair vttc = st.pop();
-
 			System.out.println(vttc.vname + " via " + vttc.psf);
-
 			for (String key : vtces.get(vttc.vname).neighb.keySet()) {
-
-				if (!prc.contains(key)) {
+				if (!visited.contains(key)) {
 					Pair pai = new Pair();
 					pai.vname = key;
 					pai.psf = vttc.psf + key;
-					prc.add(key);
+					visited.add(key);
 					st.push(pai);
 				}
 			}
-
 		}
-
 	}
 
 	// Minimum spanning tree

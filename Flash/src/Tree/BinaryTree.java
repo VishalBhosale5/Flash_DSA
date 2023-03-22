@@ -360,7 +360,7 @@ public void postOrder(Node node)
 
 
 
-//Another approach iterative preOrder Traversal
+//Another approach easy iterative preOrder Traversal
 
 class TraversalPair
 {

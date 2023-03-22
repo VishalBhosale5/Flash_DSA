@@ -6,15 +6,14 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 
-import org.w3c.dom.Node;
 
 public class BinaryTree_dummy {
 
-		public  class Node {
+		public class Node {
 
-			int data;
-			Node left;
-			Node right;
+			 public int data;
+			 public Node left;
+			public Node right;
 
 			Node(int data, Node left, Node right) {
 				this.data = data;
@@ -688,6 +687,7 @@ public class BinaryTree_dummy {
 		
 		return sum;
 	}
+	static  ArrayList<ArrayList<Integer>> list=new ArrayList<>();
 
 
 	//10 1 -20 1 40 -1 -1 1 -50 -1 -1 1 -30 1 60 1 70 -1 -1 -1 -1 
@@ -695,11 +695,16 @@ public class BinaryTree_dummy {
 	
 	//10 1 20 1 40 -1 -1 1 50 -1 -1 1 30 1 60 1 -1 1 70 -1 1 80 -1 -1
 	//50 1 30 1 10 -1 -1 1 40 -1 -1 1 60 1 55 -1 -1 1 65 -1 1 80 -1 -1
+//	//1 1 2 1 4 -1 -1 1 5 -1 -1 1 3 1 6 -1 -1 1 7 -1 -1
 
 	//10 true 8 true 7 false false true 9 false false true 12 true 11 false false true 13 false false
-
+	//
 	//10 true 20 true 40 true 80 false false true 90 false false true 50 false false true 30 true 60 true 100 false false true 200 false false true 70 false false
 		public static void main(String[] args) {
+			
+			list.add(new ArrayList<>());
+			list.add(new ArrayList<>());
+			list.add(new ArrayList<>());
 			BinaryTree_dummy tree=new BinaryTree_dummy();
 			//tree.display();
 			//System.out.println(tree.height(tree.root));
@@ -734,11 +739,89 @@ public class BinaryTree_dummy {
 			BinaryTree_dummy tree2=new BinaryTree_dummy(pre,in);
 			tree2.display();*/
 			
-			tree.inOrder(tree.root);
-			System.out.println();
-			System.out.println("root of tree: "+tree.root.data);
-			System.out.println("sum is:"+tree.sumMax(tree.root));
-			System.out.println(maxsum);
+//			tree.inOrder(tree.root);
+//			System.out.println();
+//			System.out.println("root of tree: "+tree.root.data);
+//			System.out.println("sum is:"+tree.sumMax(tree.root));
+//			System.out.println(maxsum);
+			
+			//preOrderInOrderPostOrderTraversal(tree.root);
+		
+			iterativePreOrderInOrderPostOrder(tree.root);
+			System.out.println("PreOrder: "+list.get(0));
+			System.out.println("InOrder: "+list.get(1));
+			System.out.println("PostOrder: "+list.get(2));
+		}
+		
+		/*
+		 * get preorder inorder postorder traversal in 1 traversal
+		 */
+		public static void preOrderInOrderPostOrderTraversal(Node node)
+		{
+			if(node==null)
+				return ;
+			//first time visit
+			list.get(0).add(node.data);
+			preOrderInOrderPostOrderTraversal(node.left);
+			
+			//2nd time visit
+			list.get(1).add(node.data);
+			
+			preOrderInOrderPostOrderTraversal(node.right);
+			
+			//3rd time visit while removing from stack
+			list.get(2).add(node.data);
+			
+		}
+		
+		public static void iterativePreOrderInOrderPostOrder(Node node)
+		{
+			
+			Stack<Pairs> st=new Stack<>();
+			st.push(new Pairs(node, 1));
+			
+			while(!st.isEmpty())
+			{
+				
+				Pairs curr=st.peek();
+				
+				if(curr.num==1)
+				{
+					list.get(0).add(curr.node.data);
+					
+					curr.num++;
+					if(curr.node.left!=null)
+						st.push(new Pairs(curr.node.left,1));
+					
+				}
+				else if(curr.num==2)
+				{
+					list.get(1).add(curr.node.data);
+
+					curr.num++;
+					
+					if(curr.node.right!=null)
+						st.push(new Pairs(curr.node.right,1));
+				}
+				else
+				{
+					list.get(2).add(curr.node.data);
+					st.pop();
+				}
+				
+				
+			}
+			
+			
 			
 		}
 	}
+class Pairs{
+	BinaryTree_dummy.Node node;
+	int num;
+	Pairs(BinaryTree_dummy.Node node,int num)
+	{
+		this.node=node;
+		this.num=num;
+	}
+}

@@ -133,15 +133,14 @@ public class Graph {
 		String pathSoFar;
 
 	}
-//O(E+V)
+	
+		//O(E+V)
 	public boolean BFS(String src, String dest) {
 		Queue<Pair> q = new LinkedList<>();
 		HashSet<String> processed = new HashSet<>();
-		// add last and removefirst
 		Pair sp = new Pair();
 		sp.vertex = src;
 		sp.pathSoFar = src;
-
 		q.add(sp);
 
 		while (!q.isEmpty()) {
@@ -165,30 +164,24 @@ public class Graph {
 					Pair p = new Pair();
 					p.vertex = key;
 					p.pathSoFar = rp.pathSoFar + key;
-
 					q.add(p);
 				}
-
 				// processed.add(key);
-
 			}
-
 		}
-
 		return false;
-
 	}
+	
 	//O(E+V)
 	public void BFT() {
 		Queue<Pair> q = new LinkedList<>();
 		HashSet<String> processed = new HashSet<>();
-		// add last and removefirst
-
+		
+		//for loop in case graph is disconnected
+		
 		for (String key : vtces.keySet()) {
-
 			if (processed.contains(key))
 				continue;
-
 			Pair sp = new Pair();
 			sp.vertex = key;
 			sp.pathSoFar = key;
@@ -220,19 +213,16 @@ public class Graph {
 					// processed.add(key);
 
 				}
-
 			}
 		}
 	}
-	//O(E+V)
 	
+	//O(E+V)
 	public ArrayList<ArrayList<String>> getConnectedComponents() {
 
 		ArrayList<ArrayList<String>> list = new ArrayList<>();
 		Queue<Pair> q = new LinkedList<>();
 		HashSet<String> processed = new HashSet<>();
-		// add last and removefirst
-
 		for (String key : vtces.keySet()) {
 
 			if (processed.contains(key))
@@ -278,12 +268,10 @@ public class Graph {
 
 		return list;
 	}
-	//O(E+V)
+	//O(E+V) //in undirected graph
 	public boolean isCyclic() {
 		Queue<Pair> q = new LinkedList<>();
 		HashSet<String> processed = new HashSet<>();
-		// add last and removefirst
-
 		for (String key : vtces.keySet()) {
 
 			if (processed.contains(key))
@@ -325,7 +313,7 @@ public class Graph {
 		}
 		return false;
 	}
-	//O(E+V)
+	//O(E+V)  if 1 connected component then connected graph
 	public boolean isConnected() {
 		Queue<Pair> q = new LinkedList<>();
 		HashSet<String> processed = new HashSet<>();
@@ -469,41 +457,64 @@ public class Graph {
 		}
 	}
 
+	// directed and undirected graph: if tree is connected && it has no cycle then its tree
+	// undirected graph only: we can also check if tree is cyclic or not using = if tree has n-1 edges 
+	
+	
+	//also if u find any edge which connects to its ancestor (visited) which is not his parent then its back edge. if graph contains 
+		//back edge means it has cycle.
+		
+		
 	public boolean isTree() {
 
-		return !isCyclic() && isConnected();
+		return !isCyclic() && isConnected();  //or edges=nodes-1 && isConnected() in case undirected graph
 	}
 
 	
+	 public boolean isGraphContainsBackEdge(int curr,int parent,HashSet<Integer> visited,ArrayList<ArrayList<Integer>> adj)
+	    {
+	        
+	        visited.add(curr);
+	        
+	        for(int i:adj.get(curr))
+	        {
+	            if(!visited.contains(i))
+	            {
+	              if(isGraphContainsBackEdge(i,curr,visited,adj)) 
+	              return true;
+	            }
+	            else if(i!=parent)
+	            return true;
+	        }
+	        return false;
+	    }
+	 
+	 
+	 
+	
 	//check if graph is bipartitle 
 	//assuming graph is connected, if not then run below method in for loop for each vertex
+	
+	
 	public boolean isBartitite(Graph g)
 	{
 		//BFS traversal
 		Queue<String> q=new LinkedList<>();
-		
 		//array to track color and visited
 		int[] vis=new int[g.numVertex()+1];
 		Arrays.fill(vis, -1);
-		
 		q.add("1");
 		int color=0;
 		vis[Integer.parseInt("1")]=color;
-
 		while(!q.isEmpty())
 		{
-			
 			String node=q.poll();
-	
-			
-			
 			for(String nbr:g.vtces.get(node).neighbr.keySet())
 			{
 				if(vis[Integer.parseInt(nbr)]==-1)
 				{
 					q.add(nbr);
 					vis[Integer.parseInt(nbr)]=vis[Integer.parseInt(node)]==0?1:0;
-					
 				}
 				else
 				{
@@ -512,28 +523,23 @@ public class Graph {
 				}
 			}
 			
-			
 		}
-		
-		
 		return true;
 	}
 	
 	
-	
 	//check if hamiltonian graph 
 	// if hamiltonian cycle then its hamiltonian graph
-	
+	//https://www.youtube.com/watch?v=jGRRBJlNtwI
 	public boolean isHamiltonianGraph(Graph g)
 	{
 		ArrayList<String> path=new ArrayList<>();
 		String end="";
 		path.add("1");
-		return dfsmodified( "1",g,path,end);// && g.vtces.get(end).neighbr.containsKey("1");
+		return dfsmodified( "1",g,path,end);// && g.vtces.get(end).neighbr.containsKey("1"); //uncomment to check if hamiltonian cycle/circuit present 
+		
 		
 	}
-	
-	
 	
 	private boolean dfsmodified(String node,Graph g, ArrayList<String> path,String end) {
 		
@@ -858,35 +864,66 @@ public class Graph {
 	
 		
 		
-		g.addVertex("s");
-		g.addVertex("a");
-		g.addVertex("b");
-		g.addVertex("c");
-		g.addVertex("d");
-		g.addVertex("t");
-     	//g.addVertex("7");
+//		g.addVertex("s");
+//		g.addVertex("a");
+//		g.addVertex("b");
+//		g.addVertex("c");
+//		g.addVertex("d");
+//		g.addVertex("t");
+//     	//g.addVertex("7");
+//
+//		g.addEdge("s", "a", 7);
+//		g.addEdge("a", "b", 5);
+//
+//		g.addEdge("s", "d", 4);
+//		g.addEdge("d", "a", 3);
+//		g.addEdge("d", "c", 2);
+//		g.addEdge("c", "t", 5);
+//		g.addEdge("a", "c", 3);
+//		g.addEdge("c", "b", 3);
+//		g.addEdge("b", "t", 8);
 
-		g.addEdge("s", "a", 7);
-		g.addEdge("a", "b", 5);
-
-		g.addEdge("s", "d", 4);
-		g.addEdge("d", "a", 3);
-		g.addEdge("d", "c", 2);
-		g.addEdge("c", "t", 5);
-		g.addEdge("a", "c", 3);
-		g.addEdge("c", "b", 3);
-		g.addEdge("b", "t", 8);
 
 
-
-		g.display();
+		//g.display();
 		//System.out.println(g.isBartitite(g));
 		
 //		g.shorttestPath(g);
 //		g.shorttestPathDAG(g);
 		//g.getArtculationPoints(g);
 		//System.out.println(g.isHamiltonianGraph(g));
-		System.out.println(g.maxFlow("s", "t"));
+		//System.out.println(g.maxFlow("s", "t"));
+		
+		
+		
+		
+		
+//		g.addVertex("A");
+//		g.addVertex("B");
+//		g.addVertex("C");
+//		g.addVertex("D");
+//		g.addVertex("E");
+//		g.addVertex("F");
+//		g.addVertex("G");
+//		
+//		g.addEdge("A", "B", 1);
+//		g.addEdge("A", "D", 5);
+//		g.addEdge("D", "C", 6);
+//		g.addEdge("B", "C", 3);
+//		g.addEdge("D", "E", 9);
+//		g.addEdge("E", "F", 4);
+//		g.addEdge("G", "F", 2);
+//		g.addEdge("E", "G", 4);
+		
+		g.addEdge("A", "B", 1);
+		g.addEdge("B", "C", 5);
+		g.addEdge("C", "D", 6);
+		g.addEdge("D", "A", 3);
+		g.display();
+		
+		//System.out.println(g.getConnectedComponents());
+		System.out.println(g.isCyclic());
+		
 	}
 
 	// kruskal's algorithm to find minimum cost spanning tree
